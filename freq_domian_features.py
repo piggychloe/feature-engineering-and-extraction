@@ -1,8 +1,3 @@
-"""
-Created on 7/21/22
-
-@author: qinyuzhu
-"""
 
 import numpy as np
 
@@ -18,9 +13,10 @@ class  Fea_Extra ( ) :
         self . signal = Signal
         self . Fs = Fs
 
-    def  Time_fea ( self , signal_ ) :
+    def  Time_feature ( self , signal_ ) :
         """
-        Extract 11 types of time domain features
+        Extract 11 types of time domain features: mean, standard deviation, square root amplitude, RMS, peak, skweness, kurtosis,
+        crest factor, clearance factor, shape factor, impulse factor
         """
         N =  len ( signal_ )
         y = signal_
@@ -44,21 +40,20 @@ class  Fea_Extra ( ) :
 
         t_clear_9   = np . max ( np . abs ( y ) ) / t_fgf_3 # 9_clearance                    factor
 
-        t_shape_10 =  ( N * t_rms_4 ) /( np . sum ( np . abs ( y ) ) )            # 10_Shape fator
+        t_shape_10 =  ( N * t_rms_4 ) /( np . sum ( np . abs ( y ) ) )            # 10_Shape factor
 
-        t_imp_11   =  ( np . max ( np . abs ( y ) ) ) /( np . mean ( np . abs ( y ) ) )   # 11_ Impulse Fator
+        t_imp_11   =  ( np . max ( np . abs ( y ) ) ) /( np . mean ( np . abs ( y ) ) )   # 11_ Impulse Factor
 
-        t_fea = np . array ( [ t_mean_1 , t_std_2 , t_fgf_3 , t_rms_4 , t_pp_5 ,
+        t_feature = np . array ( [ t_mean_1 , t_std_2 , t_fgf_3 , t_rms_4 , t_pp_5 ,
                           t_skew_6 ,    t_kur_7 ,   t_cres_8 ,   t_clear_9 , t_shape_10 , t_imp_11 ] )
 
-        #print("t_fea:",t_fea.shape,'\n', t_fea)
-        return t_fea
+        return t_feature
 
-    def  Fre_fea ( self , signal_ ) :
+    def  Fre_feature ( self , signal_ ) :
         """
         Extract 13 types of frequency domain features
         :param signal_:
-        :return:
+        :return: a numpy array with generating all frequency domain features
         """
         L =  len ( signal_ )
         PL =  abs ( np. FFT . FFT ( signal_/ L ) ) [ :  int ( L / 2 ) ]
@@ -66,13 +61,7 @@ class  Fea_Extra ( ) :
         F = np. FFT . Fftfreq ( L ,.1  / self . Fs ) [:  int ( L / 2 ) ]
         x = F
         y = PL
-        K =  len ( y )
-        # print("signal_.shape:",signal_.shape)
-        # print("PL.shape:", PL.shape)
-        # print("L:", L)
-        # print("K: ", K)
-        # print("x:",x)
-        # print("y:",y)
+        K = len ( y )
 
         f_12 = np . mean ( y )
 
@@ -100,24 +89,21 @@ class  Fea_Extra ( ) :
 
         #f_24 = (np.sum((np.sqrt(x-f_16))*y))/(K * np.sqrt(f_17)) # There is a minus sign under the root sign of f_24, so remove it first
 
-
-        #print("f_16:",f_16)
-
-        #f_fea = np.array([f_12, f_13, f_14, f_15, f_16, f_17, f_18, f_19, f_20, f_21, f_22, f_23, f_24])
-        f_fea = np . array ( [ f_12 , f_13 , f_14 , f_15 , f_16 , f_17 , f_18 , f_19 , f_20 , f_21 , f_22 , f_23 ] )
+        #f_feature = np.array([f_12, f_13, f_14, f_15, f_16, f_17, f_18, f_19, f_20, f_21, f_22, f_23, f_24])
+        f_feature = np . array ( [ f_12 , f_13 , f_14 , f_15 , f_16 , f_17 , f_18 , f_19 , f_20 , f_21 , f_22 , f_23 ] )
 
         #print("f_fea:",f_fea.shape,'\n', f_fea)
-        return f_fea
+        return f_feature
 
-    def  Both_Fea ( self ) :
+    def  Both_Feature ( self ) :
         """
         :return: time domain, frequency domain feature array
         """
-        t_fea = self . Time_fea ( self . signal )
-        f_fea = self . Fre_fea ( self . signal )
-        fea = np . append ( np . array ( t_fea ) , np . array ( f_fea ) )
+        t_feature = self . Time_feature ( self . signal )
+        f_feature = self . Fre_feature ( self . signal )
+        feature = np . append ( np . array ( t_feature ) , np . array ( f_feature ) )
         #print("fea:" , fea.shape,'\n', fea)
-        return fea
+        return feature
 
 
 
